@@ -6,6 +6,7 @@ import com.example.cookbook.service.RecipeMapper;
 import com.example.cookbook.service.RecipeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecipeController {
     private final RecipeService recipeService;
     private final RecipeMapper recipeMapper;
+    private final ObjectMapper mapper;
 
     @GetMapping("/")
     public List<Recipe> getAll() {
@@ -37,7 +39,7 @@ public class RecipeController {
 
     @GetMapping("/history/{id}")
     public List<String> getHistory(@PathVariable Long id) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         List list = recipeService.showHistoryById(id);
         List<String> history = new ArrayList<>();
         for (Object object : list) {
